@@ -14,6 +14,7 @@ func main() {
 		}
 
 		fmt.Println(string(body))
+		fmt.Println()
 	})
 
 	http.ListenAndServe(":8080", nil)
