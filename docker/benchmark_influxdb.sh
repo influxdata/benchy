@@ -4,8 +4,8 @@
 branch=${1:master}
 url=${2:http://localhost:8086}
 hardwareID=${3:local}
-bench=$(4:.)
-timeout=$(5:20m)
+bench=${4:.}
+timeout=${5:20m}
 
 cd /root && \
   export GOPATH=$(pwd) && \
