@@ -1,0 +1,6 @@
+hash: 67ccb7a86618425894361174e750c511c1a8ddd0822083447ae0371b3da7b369
+updated: 2016-06-28T08:35:11.562956924-07:00
+imports:
+- name: github.com/roylee0704/gron
+  version: e78485adab469c8f47aef96f6afff89bb1228400
+devImports: []

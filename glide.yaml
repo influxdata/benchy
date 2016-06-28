@@ -1,0 +1,3 @@
+package: github.com/influxdata/benchy-mcbenchface
+import:
+- package: github.com/roylee0704/gron
