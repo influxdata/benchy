@@ -1,0 +1,4 @@
+FROM golang:1.6.2-wheezy
+
+ADD ./benchmark_influxdb.sh /benchmark_influxdb.sh
+CMD /benchmark_influxdb.sh
