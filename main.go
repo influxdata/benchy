@@ -1,4 +1,4 @@
-package main
+package benchy
 
 import (
 	"fmt"
@@ -14,17 +14,15 @@ func init() {
 
 type gitFetcher struct {
 	wg           sync.WaitGroup
-	branch       string
 	dir          string
 	currentSHA   string
 	pollInterval time.Duration
 	c            *gron.Cron
 }
 
-func NewGitFetcher(dir, branch string, pollInterval time.Duration) *gitFetcher {
+func NewGitFetcher(dir string, pollInterval time.Duration) *gitFetcher {
 	return &gitFetcher{
 		dir:          dir,
-		branch:       branch,
 		pollInterval: pollInterval,
 		c:            gron.New(),
 	}
@@ -44,21 +42,21 @@ func (g *gitFetcher) fetch() error {
 	return nil
 }
 
-func (g *gitFetcher) revParse() (string, error) {
-	cmd := exec.Command("git", "rev-parse", g.branch)
+func (g *gitFetcher) revParse(branch string) (string, error) {
+	cmd := exec.Command("git", "rev-parse", branch)
 	cmd.Dir = g.dir
 	out, err := cmd.Output()
 	return string(out), err
 }
 
-func (g *gitFetcher) OnNewSHA(fn func(sha string)) {
+func (g *gitFetcher) OnNewSHA(branch string, fn func(sha string)) {
 	g.c.AddFunc(gron.Every(g.pollInterval), func() {
 		if err := g.fetch(); err != nil {
 			fmt.Printf("Error Fetching Git Repo: %v\n", err)
 			return
 		}
 
-		sha, err := g.revParse()
+		sha, err := g.revParse(branch)
 		if err != nil {
 			fmt.Printf("Error with rev-parse: %v\n", err)
 			return
@@ -84,14 +82,4 @@ func (g *gitFetcher) Stop() {
 
 func (g *gitFetcher) Wait() {
 	g.wg.Wait()
-}
-
-func main() {
-	g := NewGitFetcher("/Users/michaeldesa/go/src/github.com/influxdata/benchy-mcbenchface", "master", 1*time.Second)
-	g.OnNewSHA(func(sha string) {
-		fmt.Println(sha)
-	})
-	g.Start()
-
-	g.Wait()
 }
